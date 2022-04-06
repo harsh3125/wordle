@@ -1,0 +1,23 @@
+name: Android CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Build Android client
+      run: ./gradlew assembleDebug
+    - name: Build Compose Desktop client
+      run: ./gradlew :compose-desktop:assemble
+    - name: Build iOS shared code
+      run: ./gradlew :shared:compileKotlinIosArm64
+    - name: Tests
+      run:  ./gradlew :shared:testDebugUnitTest
